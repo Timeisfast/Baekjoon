@@ -1,53 +1,35 @@
 #include <iostream>
 #include <vector>
-
 using namespace std;
 
-vector<int> board;
-bool isused[15] = { 0 };
-int ans = 0;
-int N;
+int N, ans{ 0 };
+int b[15] = { 0, };
+bool isUsed[15] = { false, };
 
-void BT(int ind)
-{
-	if (ind >= N)
-	{
+void f(int a) {
+	if (a == N) {
 		ans++;
 		return;
 	}
+	for (int i = 0; i < N; i++) {
+		if (isUsed[i]) continue;
+		
+		int j;
+		b[a] = i;
+		for (j = 0; j < a; j++)
+			if (a - j == abs(b[a] - b[j])) break;
 
-	for (int i = 1; i <= N; i++)
-	{
-		if (isused[i]) continue;
-		else
-		{
-			int j;
-			isused[i] = true;
-			board[ind] = i;
-			for (j = 0; j < ind; j++)
-			{
-				if (ind - j == abs(board[ind] - board[j]))
-				{
-					isused[i] = false;
-					break;
-				}
-			}
-			if (j >= ind || ind == 0)
-				BT(ind + 1);
-			isused[i] = false;
+		if (j >= a || a == 0) {
+			isUsed[i] = true;
+			f(a + 1);
 		}
+		isUsed[i] = false;
 	}
 }
 
-int main()
-{
+int main() {
+	ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
 	cin >> N;
-	vector<int> v;
-
-	for (int i = 0; i < N; i++)
-		board.push_back(0);
-
-	BT(0);
-
+	f(0);
 	cout << ans;
 }

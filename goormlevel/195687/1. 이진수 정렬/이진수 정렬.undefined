@@ -1,0 +1,20 @@
+def binary(value):
+	tmp = []
+	while value != 0:
+		tmp.append(value % 2)
+		value //= 2
+	sum = 0
+	for i in tmp:
+		if i == 1:
+			sum += 1
+	return sum
+	
+n, k = map(int, input().split())
+
+v = []
+v1 = list(map(int, input().split()))
+for i in v1:
+	v.append([binary(i), i])
+
+v.sort(reverse = True)
+print(v[k - 1][1])

@@ -1,93 +1,64 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#define INF 10000000
 using namespace std;
 
-int N, M, X, sum[1001]{ 0, };
-vector<vector<int>> node;
-vector<vector<int>> r_node;
-
-vector<int> Dijkstra(int str) {
-	vector<int> dis(node.size(), INF);
-	dis[str] = 0;
-
-	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-
-	pq.push(make_pair(dis[str], str));
-
-	while (!pq.empty()) {
-		int n = pq.top().second;
-		pq.pop();
-
-		for (int i = 0; i < N + 1; i++) {
-			if (node[n][i] > 0) {
-				int k = dis[n] + node[n][i];
-				if (k < dis[i]) {
-					dis[i] = k;
-					pq.push(make_pair(dis[i], i));
-				}
-			}
-		}
-	}
-
-	return dis;
-}
-
-vector<int> r_Dijkstra(int str) {
-	vector<int> dis(r_node.size(), INF);
-	dis[str] = 0;
-
-	priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-
-	pq.push(make_pair(dis[str], str));
-
-	while (!pq.empty()) {
-		int n = pq.top().second;
-		pq.pop();
-
-		for (int i = 0; i < N + 1; i++) {
-			if (r_node[n][i] > 0) {
-				int k = dis[n] + r_node[n][i];
-				if (k < dis[i]) {
-					dis[i] = k;
-					pq.push(make_pair(dis[i], i));
-				}
-			}
-		}
-	}
-
-	return dis;
-}
+vector<pair<int, int>> vertex[10000];
+vector<pair<int, int>> rvertex[10000];
+int dis_in[20000] = { 0, };
+int dis_out[20000] = { 0, };
 
 int main() {
-	ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
-	cin >> N >> M >> X;
-	node.resize(N + 1);
-	r_node.resize(N + 1);
-	for (int i = 0; i <= N; i++) {
-		node[i].resize(N + 1);
-		r_node[i].resize(N + 1);
-		for (int j = 0; j <= N; j++) {
-			node[i][j] = -1;
-			r_node[i][j] = -1;
-		}
-		node[i][i] = 0;
-		r_node[i][i] = 0;
-	}
-	int a, b, c;
-	while (M--) {
+	ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	int n, m;
+	cin >> n >> m;
+
+	int x;
+	cin >> x;
+
+	for (int i = 0; i < m; i++) {
+		int a, b, c;
 		cin >> a >> b >> c;
-		node[a][b] = c;
-		r_node[b][a] = c;
+		vertex[a].push_back({ c, b });
+		rvertex[b].push_back({ c, a });
 	}
 
-	vector<int> v1 = Dijkstra(X);
-	vector<int> v2 = r_Dijkstra(X);
+	for (int i = 0; i < n + 1; i++) {
+		dis_in[i] = dis_out[i] = 10000000;
+	}
+
+	priority_queue < pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
+	dis_in[x] = dis_out[x] = 0;
+	pq.push({ dis_in[x], x });
+	while (!pq.empty()) {
+		pair<int, int> k = pq.top();
+		pq.pop();
+
+		for (pair<int, int> x : vertex[k.second]) {
+			if (dis_in[x.second] <= dis_in[k.second] + x.first)
+				continue;
+			dis_in[x.second] = dis_in[k.second] + x.first;
+			pq.push({ dis_in[x.second], x.second });
+		}
+	}
+
+	pq.push({ dis_out[x], x });
+	while (!pq.empty()) {
+		pair<int, int> k = pq.top();
+		pq.pop();
+
+		for (pair<int, int> x : rvertex[k.second]) {
+			if (dis_out[x.second] <= dis_out[k.second] + x.first)
+				continue;
+			dis_out[x.second] = dis_out[k.second] + x.first;
+			pq.push({ dis_out[x.second], x.second });
+		}
+	}
+
 	int ans = 0;
-	for (int i = 1; i <= N; i++) {
-		sum[i] = v1[i] + v2[i];
-		if (sum[i] > ans) ans = sum[i];
+	for (int i = 1; i < n + 1; i++) {
+		ans = max(ans, dis_in[i] + dis_out[i]);
 	}
 
 	cout << ans;

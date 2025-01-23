@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 using namespace std;
 
 int main()
@@ -13,7 +14,7 @@ int main()
 
 	while (T--) {
 		cin >> M >> N >> x >> y;
-		int m = M * N;
+		int m = lcm(N, M);
 		
 		vector<int> s1, s2;
 		for (int i = 0;; i++) {

@@ -1,7 +1,8 @@
 #include <iostream>
-#include <vector>
+#include <deque>
 #include <string>
 #include <algorithm>
+#include <sstream>
 using namespace std;
 
 int path[101][101];
@@ -17,21 +18,16 @@ int main()
 
 	while (T--) {
 		cin >> command >> N;
-		vector<int> v;
+		deque<int> v;
 		cin >> arr;
 		
-		int i;
-		if (N != 0) {
-			int k = 1;
-			for (i = 1; i < arr.size(); i++) {
-				if (i != k && arr[i] == ',' || arr[i] == ']') {
-					string tmp = arr.substr(k, i - k);
-					k = i + 1;
-					v.push_back(stoi(tmp));
-				}
-			}
+		arr = arr.substr(1, arr.size() - 2);
+		istringstream iss(arr);
+		while (getline(iss, arr, ',')) {
+			v.push_back(stoi(arr));
 		}
 
+		int i;
 		bool flag = false, flipped = false;
 		for (i = 0; i < command.size(); i++) {
 			if (command[i] == 'R')
@@ -43,7 +39,7 @@ int main()
 				}
 				else {
 					if (flipped) v.pop_back();
-					else v.erase(v.begin());
+					else v.pop_front();
 				}
 			}
 		}

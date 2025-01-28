@@ -4,7 +4,7 @@
 using namespace std;
 
 int tomato[101][101][101];
-vector<vector<int>> v;
+queue<vector<int>> q;
 
 int main()
 {
@@ -22,32 +22,28 @@ int main()
 			for (i = 0; i < M; i++) {
 				cin >> tomato[i][j][k];
 				if (tomato[i][j][k] == 1)
-					v.push_back({ i, j, k, 1 });
+					q.push({ i, j, k, 1 });
 			}
 		}
 	}
 
-	queue<vector<int>> q;
 	int x, y, z, day, nx, ny, nz;
-	for (i = 0; i < v.size(); i++) {
-		q.push(v[i]);
-		while (!q.empty()) {
-			x = q.front()[0];
-			y = q.front()[1];
-			z = q.front()[2];
-			day = ++q.front()[3];
-			q.pop();
+	while (!q.empty()) {
+		x = q.front()[0];
+		y = q.front()[1];
+		z = q.front()[2];
+		day = ++q.front()[3];
+		q.pop();
 
-			for (j = 0; j < 6; j++) {
-				nx = x + dx[j];
-				ny = y + dy[j];
-				nz = z + dz[j];
+		for (j = 0; j < 6; j++) {
+			nx = x + dx[j];
+			ny = y + dy[j];
+			nz = z + dz[j];
 
-				if (nx < 0 || nx >= M || ny < 0 || ny >= N || nz < 0 || nz >= H) continue;
-				if (tomato[nx][ny][nz] == 0 || tomato[nx][ny][nz] > day) {
-					tomato[nx][ny][nz] = day;
-					q.push({ nx, ny, nz, day });
-				}
+			if (nx < 0 || nx >= M || ny < 0 || ny >= N || nz < 0 || nz >= H) continue;
+			if (tomato[nx][ny][nz] == 0 || tomato[nx][ny][nz] > day) {
+				tomato[nx][ny][nz] = day;
+				q.push({ nx, ny, nz, day });
 			}
 		}
 	}

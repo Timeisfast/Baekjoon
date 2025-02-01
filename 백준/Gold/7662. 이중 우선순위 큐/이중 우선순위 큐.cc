@@ -1,7 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <queue>
-#include <unordered_map>
+#include <set>
 using namespace std;
 
 int main()
@@ -16,38 +14,21 @@ int main()
 	while (T--) {
 		cin >> k;
 
-		unordered_map<int, int> m;
-		priority_queue<int> qmax;
-		priority_queue<int, vector<int>, greater<int>> qmin;
+		multiset<int> ms;
 		while (k--) {
 			cin >> c >> n;
-			if (c == 'I') {
-				qmin.push(n);
-				qmax.push(n);
-				m[n]++;
-			}
+			if (c == 'I')
+				ms.insert(n);
 			else {
-				if (n == 1) {
-					while (!qmax.empty() && m[qmax.top()] == 0) qmax.pop();
-					if (!qmax.empty()) {
-						m[qmax.top()]--;
-						qmax.pop();
-					}
-				}
-				else {
-					while (!qmin.empty() && m[qmin.top()] == 0) qmin.pop();
-					if (!qmin.empty()) {
-						m[qmin.top()]--;
-						qmin.pop();
-					}
-				}
+				if (ms.empty()) continue;
+				if (n == 1)
+					ms.erase(prev(ms.end()));
+				else
+					ms.erase(ms.begin());
 			}
 		}
 
-		while (!qmin.empty() && m[qmin.top()] == 0) qmin.pop();
-		while (!qmax.empty() && m[qmax.top()] == 0) qmax.pop();
-
-		if (qmin.empty()) cout << "EMPTY\n";
-		else cout << qmax.top() << " " << qmin.top() << "\n";
+		if (ms.empty()) cout << "EMPTY\n";
+		else cout << *prev(ms.end()) << " " << *ms.begin() << "\n";
 	}
 }

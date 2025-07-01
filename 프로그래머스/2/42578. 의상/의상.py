@@ -5,7 +5,7 @@ def solution(clothes):
     category_count = Counter(category)
     
     answer = 1
-    for _, value in category_count.items():
+    for value in category_count.values():
         answer *= value + 1
     
     return answer - 1

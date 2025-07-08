@@ -1,17 +1,16 @@
-import numpy as np
-from itertools import dropwhile
-
 def solution(board, moves):
-    board = np.array(board).T.tolist()
-    board = [list(dropwhile(lambda x: x == 0, row)) for row in board]
+    cols = []
+    for j in range(len(board[0])):
+        col = [board[i][j] for i in range(len(board)) if board[i][j] != 0]
+        cols.append(col)
     
     bucket = []
     answer = 0
     for m in moves:
-        if len(board[m - 1]) != 0:
-            bucket.append(board[m - 1].pop(0))
-            if len(bucket) > 1 and bucket[-1] == bucket[-2]:
-                bucket.pop(-1)
-                bucket.pop(-1)
+        if cols[m - 1]:
+            bucket.append(cols[m - 1].pop(0))
+            if len(bucket) >= 2 and bucket[-1] == bucket[-2]:
+                bucket.pop()
+                bucket.pop()
                 answer += 2
     return answer

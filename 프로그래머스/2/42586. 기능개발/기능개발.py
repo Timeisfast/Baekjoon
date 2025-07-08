@@ -1,17 +1,12 @@
-import heapq
 import math
 
 def solution(progresses, speeds):
     k = 0
-    cnt = 0
     answer = []
-    for i, p in enumerate(progresses):
-        if p + speeds[i] * k >= 100:
-            cnt += 1
-            continue
-        if cnt != 0:
-            answer.append(cnt)
-        k = math.ceil((100 - p) / speeds[i])
-        cnt = 1
-    answer.append(cnt)
+    for p, s in zip(progresses, speeds):
+        if len(answer) == 0 or p + s * k < 100:
+            answer.append(1)
+            k = math.ceil((100 - p) / s)
+        else:
+            answer[-1] += 1
     return answer
